@@ -435,8 +435,8 @@ function App() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-8">
                 <Shield className="w-12 h-12 text-red-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">Competitive Moat</h3>
-                <p className="text-slate-600">Deep relationships create sustainable competitive advantages</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">Competitive Advantage</h3>
+                <p className="text-slate-600">Deep trust networks lead to relationships that create sustainable competitive advantages</p>
               </CardContent>
             </Card>
           </div>
@@ -620,7 +620,7 @@ function App() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-500 to-cyan-400 text-white text-center">
+      <section className="py-16 bg-white text-center">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Referral Generation?</h2>
           <p className="text-xl mb-8 opacity-90">
@@ -629,7 +629,7 @@ function App() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-slate-100 px-8 py-4 rounded-full font-semibold text-lg"
+              className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:from-blue-600 hover:to-cyan-500 px-8 py-4 rounded-full font-semibold text-lg"
               onClick={() => setIsModalOpen(true)}
             >
               Schedule Discovery Call
@@ -637,7 +637,7 @@ function App() {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-white hover:bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg"
+              className="border-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 px-8 py-4 rounded-full font-semibold text-lg"
               onClick={() => scrollToSection('roi-calculator')}
             >
               Calculate Your ROI
@@ -679,7 +679,7 @@ function App() {
             </div>
           </div>
           <div className="border-t border-slate-800 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 Affiniti Solutions. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Affiniti Solutions. All rights reserved.</p>
           </div>
         </div>
       </footer>
