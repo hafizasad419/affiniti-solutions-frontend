@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog.jsx'
 import { Play, ArrowRight, Target, Clock, DollarSign, TrendingUp, Users, Shield, Zap, BarChart3, CheckCircle, Star } from 'lucide-react'
 import './App.css'
+import nathanIntroVideo from './assets/videos/nathan-intro.mp4'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -106,14 +107,16 @@ function App() {
             <div className="relative">
               <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
                 <CardContent className="p-8">
-                  <div className="aspect-video bg-slate-900/50 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center mb-4 mx-auto cursor-pointer hover:scale-110 transition-transform">
-                        <Play className="w-8 h-8 text-white ml-1" />
-                      </div>
-                      <p className="text-slate-300">See how DeepTrust OS+AI transforms your sales results</p>
-                    </div>
+                  <div className="aspect-video bg-slate-900/50 rounded-lg overflow-hidden">
+                    <video
+                      className="w-full h-full object-cover"
+                      controls
+                    >
+                      <source src={nathanIntroVideo} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
                   </div>
+                  <p className="text-slate-300 text-center mt-4">See how DeepTrust OS+AI transforms your sales results</p>
                 </CardContent>
               </Card>
             </div>
