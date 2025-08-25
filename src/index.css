@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* Fonts */
+
+.special-gothic-condensed-one-regular {
+  font-family: "Special Gothic Condensed One", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.roboto {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@theme {
+  /* Header Colors from PreLoginHeader */
+  --color-primary: #0891b2; /* cyan-600 */
+  --color-accent: #22d3ee; /* cyan-400 */
+  --color-border: #1e293b; /* slate-800 */
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FF004F 0%, #FF6B9D 100%);
+  --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ 
+  --font-sans: "Roboto", sans-serif;
+  --font-heading: "Special Gothic Condensed One", sans-serif;
+}
+
+@layer utilities {
+  .glassmorphism {
+    @apply bg-white/20 backdrop-blur-3xl;
+  }
+}
+
+@layer base {
+  html {
+    background-color: #0f0f0f;
+    color: #ffffff;
+  }
+
+  body {
+    @apply font-sans bg-white text-gray-800;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading text-white text-4xl md:text-5xl font-normal leading-tight;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Primary Button */
+.btn-primary {
+  @apply flex items-center justify-center px-6 py-3 rounded-full transition-all duration-300 font-bold text-base ease-in-out select-none focus:outline-none disabled:cursor-not-allowed cursor-pointer bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  @apply flex items-center justify-center px-6 py-3 rounded-full transition-all duration-300 font-bold text-base ease-in-out select-none focus:outline-none disabled:cursor-not-allowed cursor-pointer bg-white text-gray-700;
+
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.25);
+}
+
+.btn-secondary:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Outline Button */
+.btn-outline {
+  @apply flex items-center justify-center px-6 py-3 rounded-full transition-all duration-300 font-bold text-base ease-in-out select-none focus:outline-none disabled:cursor-not-allowed cursor-pointer bg-transparent border-1 border-white text-white;
+}
+
+.btn-outline:hover {
+  transform: translateY(-1px);
+}
+
+.btn-outline:active {
+  transform: scale(0.95);
+}
+
+.btn-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
