@@ -1,4 +1,5 @@
 import HeroSection from "@/components/Home/HeroSection"
+import EarlyAccessSection from "@/components/Home/EarlyAccessSection"
 import MetricsSection from "@/components/Home/MetricsSection"
 import ProblemSection from "@/components/Home/ProblemSection"
 import OriginStory from "@/components/Home/OriginStory"
@@ -11,6 +12,7 @@ function Home() {
   return (
     <div>
       <HeroSection />
+      <EarlyAccessSection />
       <MetricsSection />
       <ProblemSection />
       {/* How It Works Section aka Origin Story */}

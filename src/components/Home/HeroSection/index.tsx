@@ -1,5 +1,5 @@
 import nathanIntroVideo from '@/assets/videos/nathan-intro.mp4';    
-
+import { scrollToElement } from '@/utils/scroll';
 
 function HeroSection() {
   return (
@@ -24,11 +24,17 @@ function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
               className="btn-primary"
+              onClick={() => {
+                scrollToElement('impact-analysis');
+              }}
             >
-              See Your Potential ROI
+              See Your Strategic Impact Analysis
             </button>
             <button 
               className="btn-secondary"
+              onClick={() => {
+                scrollToElement('how-it-works');
+              }}
             >
               How It Works
             </button>

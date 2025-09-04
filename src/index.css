@@ -46,7 +46,9 @@
     @apply font-sans bg-white text-gray-800;
   }
 
-  h1,
+  h1{
+    @apply font-heading bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent text-4xl md:text-5xl font-normal leading-tight;
+  }
   h2,
   h3,
   h4,
