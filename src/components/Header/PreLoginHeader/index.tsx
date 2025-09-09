@@ -81,7 +81,7 @@ const PreLoginHeader = ({ className = '' }: PreLoginHeaderProps) => {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
+                    <nav className="hidden md:flex items-center space-x-2 text-sm">
                         {navItems.map((item) => (
                             <div key={item.label} className="relative">
                                 {item.isScrollable ? (
