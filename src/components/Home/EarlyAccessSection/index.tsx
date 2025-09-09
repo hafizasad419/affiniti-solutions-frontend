@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 function EarlyAccessSection() {
   return (
     <section className="py-28 bg-gray-200/50 text-gray-800 relative overflow-hidden">
@@ -7,14 +9,15 @@ function EarlyAccessSection() {
           <h1 className="font-extrabold mb-8 leading-tight !shadow-lg !inline-block px-8 py-4 rounded-xl ">
             Get Early Access To DeepTrust AI
           </h1>
-          <button
-            className="btn-primary !mx-auto !shadow-lg !shadow-cyan-500/60 "
-            onClick={() => {
-              window.open('https://deeptrustai.affinitisolutions.com/', '_blank');
-            }}
-          >
-            Get Early Access
-          </button>
+
+          <div className="flex justify-center">
+            <Link
+              to="/access"
+              className="btn-primary !shadow-lg !shadow-cyan-500/60 "
+            >
+              Get Early Access
+            </Link>
+          </div>
         </div>
       </div>
     </section>

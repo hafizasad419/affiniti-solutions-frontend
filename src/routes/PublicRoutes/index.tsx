@@ -4,6 +4,7 @@ import Fallback from "@/components/Fallback";
 
 const Home = lazy(() => import('@/pages/PreLogin/Home'));
 const TrustManifesto = lazy(() => import('@/pages/PreLogin/TrustManifesto'));
+const EarlyAccess = lazy(() => import('@/pages/PreLogin/EarlyAccess'));
 
 function PublicRoutes() {
 
@@ -13,6 +14,7 @@ function PublicRoutes() {
                 <Route path='*' element={<Navigate to="/" />} />
                 <Route path='/' element={<Home />} />
                 <Route path='/trust-manifesto' element={<TrustManifesto />} />
+                <Route path='/access' element={<EarlyAccess />} />
             </Routes>
         </Suspense>
     )
