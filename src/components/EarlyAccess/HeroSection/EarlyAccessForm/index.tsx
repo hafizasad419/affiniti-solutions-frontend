@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import Axios from '@/api';
 import { SuccessNotification, ErrorNotification } from '@/utils/toast';
 import TextField from '@/components/FormikFields/TextField';
+import ThankYouModal from '@/components/EarlyAccess/ThankYouModal';
 
 interface FormValues {
   name: string;
@@ -51,6 +52,7 @@ const initialValues: FormValues = {
 
 function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(true);
 
   const handleSubmit = async (values: FormValues, { resetForm }: any) => {
     setIsLoading(true);
@@ -58,12 +60,10 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
       const response = await Axios.post('/lead/create', values);
       
       if (response.status === 200 || response.status === 201) {
-        // Check for custom success message from server
-        const successMessage = response.data?.message || 
-          '🎉 Thank you for your interest! We\'ll be in touch within 24 hours with your early access details.';
-        SuccessNotification(successMessage);
+        // Show thank you modal instead of toast
         resetForm();
         onClose();
+        setShowThankYou(true);
       } else {
         ErrorNotification('Something went wrong. Please try again.');
       }
@@ -123,24 +123,29 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
     }
   };
 
+  const handleCloseThankYou = () => {
+    setShowThankYou(false);
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-dark-primary rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold bg-clip-text text-transparent">Get Early Access</h1>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-              disabled={isLoading}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+    <>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-dark-primary rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent">Get Early Access</h1>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                disabled={isLoading}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
           <Formik
             initialValues={initialValues}
@@ -220,6 +225,10 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
         </div>
       </div>
     </div>
+
+    {/* Thank You Modal */}
+    <ThankYouModal isOpen={showThankYou} onClose={handleCloseThankYou} />
+    </>
   );
 }
 
