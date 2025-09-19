@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Axios from '@/api';
 import { SuccessNotification, ErrorNotification } from '@/utils/toast';
-import TextField from '@/components/FormikFields/TextField';
-import ThankYouModal from '@/components/EarlyAccess/ThankYouModal';
+import PremiumTextField from '@/components/FormikFields/PremiumTextField';
 
 interface FormValues {
   name: string;
@@ -51,8 +51,8 @@ const initialValues: FormValues = {
 };
 
 function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [showThankYou, setShowThankYou] = useState(false);
 
   const handleSubmit = async (values: FormValues, { resetForm }: any) => {
     setIsLoading(true);
@@ -60,10 +60,20 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
       const response = await Axios.post('/lead/create', values);
       
       if (response.status === 200 || response.status === 201) {
-        // Show thank you modal instead of toast
+        // Store referrer info and redirect to thank you page
+        localStorage.setItem('referrerInfo', JSON.stringify({
+          name: values.name,
+          email: values.email
+        }));
+        
         resetForm();
         onClose();
-        setShowThankYou(true);
+        navigate('/thank-you', {
+          state: {
+            referrerName: values.name,
+            referrerEmail: values.email
+          }
+        });
       } else {
         ErrorNotification('Something went wrong. Please try again.');
       }
@@ -123,9 +133,6 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
     }
   };
 
-  const handleCloseThankYou = () => {
-    setShowThankYou(false);
-  };
 
   if (!isOpen) return null;
 
@@ -153,53 +160,59 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
             onSubmit={handleSubmit}
           >
             {({ isValid, dirty }) => (
-              <Form className="space-y-4">
-                <TextField
+              <Form className="space-y-6">
+                <PremiumTextField
                   field="name"
                   label_text="Full Name"
                   placeholder="Enter your full name"
                   type="text"
                   required
+                  iconType="user"
                 />
 
-                <TextField
+                <PremiumTextField
                   field="email"
                   label_text="Email Address"
                   placeholder="Enter your email address"
                   type="email"
                   required
+                  iconType="email"
                 />
 
-                <TextField
+                <PremiumTextField
                   field="phone"
                   label_text="Phone Number"
                   placeholder="Enter your phone number"
                   type="tel"
                   required
+                  iconType="phone"
                 />
 
-                <TextField
+                <PremiumTextField
                   field="company"
                   label_text="Company Name"
                   placeholder="Enter your company name"
                   type="text"
                   required
+                  iconType="briefcase"
                 />
 
-                <TextField
+                <PremiumTextField
                   field="jobTitle"
                   label_text="Job Title"
                   placeholder="Enter your job title"
                   type="text"
                   required
+                  iconType="briefcase"
                 />
 
-                <TextField
+                <PremiumTextField
                   field="companyWebsite"
                   label_text="Company Website"
                   placeholder="https://yourcompany.com"
                   type="url"
                   required
+                  iconType="globe"
                 />
 
                 <button
@@ -226,8 +239,6 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
       </div>
     </div>
 
-    {/* Thank You Modal */}
-    <ThankYouModal isOpen={showThankYou} onClose={handleCloseThankYou} />
     </>
   );
 }

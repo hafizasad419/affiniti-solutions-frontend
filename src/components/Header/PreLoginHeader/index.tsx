@@ -75,7 +75,7 @@ const PreLoginHeader = ({ className = '' }: PreLoginHeaderProps) => {
                             />
                             <div className="text-white">
                                 <div className="text-xl font-bold">Affiniti Solutions</div>
-                                <div className="text-xs text-cyan-400 font-medium">DEEPTRUST OS+AI</div>
+                                <div className="text-xs text-cyan-400 font-medium">DEEPTRUST OS</div>
                             </div>
                         </NavLink>
                     </div>

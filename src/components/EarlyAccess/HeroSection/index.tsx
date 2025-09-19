@@ -13,7 +13,7 @@ function HeroSection() {
       {/* <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-400/10"></div>  */}
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          <div className="mb-6 bg-cyan-500/20 text-cyan-300 border-cyan-500/30 inline-block px-4 py-2 rounded-full">
+          <div className="mb-6 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-400 text-yellow-900 font-extrabold border-2 border-yellow-300 shadow-lg inline-block px-6 py-2 rounded-full tracking-wide">
             Early Access Program
           </div>
           
@@ -34,18 +34,6 @@ function HeroSection() {
                 Get Early Access Now
               </button>
               
-              {/* Rating Area */}
-              <div className="flex items-center justify-center space-x-2 w-full">
-                <div className="flex space-x-1">
-                  {[...Array(5)].map((_, index) => (
-                    <FaStar 
-                      key={index} 
-                      className="text-yellow-400 text-xl" 
-                    />
-                  ))}
-                </div>
-                <span className="text-white font-semibold text-sm">4.9/5 based on 38+ reviews</span>
-              </div>
             </div>
           </div>
         </div>
