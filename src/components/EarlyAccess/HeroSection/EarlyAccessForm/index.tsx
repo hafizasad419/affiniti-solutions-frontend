@@ -28,8 +28,11 @@ const validationSchema = Yup.object({
     .email('Invalid email address')
     .required('Email is required'),
   phone: Yup.string()
-    .matches(/^[\+]?[1-9][\d]{0,15}$/, 'Invalid phone number')
-    .required('Phone number is required'),
+    .required('Phone number is required')
+    .min(10, 'Invalid phone number')
+    .max(20, 'Invalid phone number')
+    
+    ,
   company: Yup.string()
     .min(2, 'Company name must be at least 2 characters')
     .required('Company name is required'),
@@ -37,7 +40,10 @@ const validationSchema = Yup.object({
     .min(2, 'Job title must be at least 2 characters')
     .required('Job title is required'),
   companyWebsite: Yup.string()
-    .url('Invalid website URL')
+    .matches(
+      /^(https?:\/\/)?(www\.)?[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.[a-zA-Z]{2,}.*$/,
+      'Please enter a valid website (e.g., yourcompany.com, www.yourcompany.com, or https://yourcompany.com)'
+    )
     .required('Company website is required'),
 });
 
@@ -209,7 +215,7 @@ function EarlyAccessForm({ isOpen, onClose }: EarlyAccessFormProps) {
                 <PremiumTextField
                   field="companyWebsite"
                   label_text="Company Website"
-                  placeholder="https://yourcompany.com"
+                  placeholder="yourcompany.com"
                   type="url"
                   required
                   iconType="globe"
