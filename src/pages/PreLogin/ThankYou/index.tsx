@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { parse } from 'csv-parse/browser/esm/sync';
@@ -20,6 +20,9 @@ const referralValidationSchema = Yup.object({
   referrerEmail: Yup.string()
     .email('Invalid email address')
     .required('Your email is required to process referrals'),
+  referrerName: Yup.string()
+    .min(2, 'Name must be at least 2 characters')
+    .required('Your name is required to process referrals'),
   friends: Yup.array().test('at-least-3-friends', 'Please add at least 3 friends to unlock VIP status', function (friends) {
     if (!friends) return false;
     const validFriends = friends.filter(friend =>
@@ -31,35 +34,17 @@ const referralValidationSchema = Yup.object({
   })
 });
 
-const getInitialValues = (friendCount: number = 3, referrerEmail: string = '') => ({
-  referrerEmail,
-  friends: Array.from({ length: friendCount }, () => ({ firstName: '', lastName: '', email: '' }))
-});
 
 function ThankYouPage({ }: ThankYouPageProps) {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const [referrerInfo, setReferrerInfo] = useState<{ name: string, email: string } | null>(null);
   const [vipStatusUnlocked, setVipStatusUnlocked] = useState(false);
   const [submittedReferrals, setSubmittedReferrals] = useState(0);
   const [friendCount, setFriendCount] = useState(3);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    // Get referrer info from location state or localStorage
-    const state = location.state as { referrerName?: string; referrerEmail?: string } | null;
-    const storedReferrer = localStorage.getItem('referrerInfo');
 
-    if (state?.referrerName && state?.referrerEmail) {
-      setReferrerInfo({ name: state.referrerName, email: state.referrerEmail });
-      localStorage.setItem('referrerInfo', JSON.stringify({ name: state.referrerName, email: state.referrerEmail }));
-    } else if (storedReferrer) {
-      setReferrerInfo(JSON.parse(storedReferrer));
-    }
-  }, [location.state]);
-
-  const handleReferralSubmit = async (values: { referrerEmail: string; friends: ReferralFriend[] }, { resetForm }: any) => {
+  const handleReferralSubmit = async (values: { referrerEmail: string; referrerName: string; friends: ReferralFriend[] }, { resetForm }: any) => {
     setIsLoading(true);
     try {
       // Filter out empty friends
@@ -74,7 +59,8 @@ function ThankYouPage({ }: ThankYouPageProps) {
 
       const response = await Axios.post('/lead/refer', {
         friends: validFriends,
-        referrerEmail: values.referrerEmail
+        referrerEmail: values.referrerEmail,
+        referrerName: values.referrerName
       });
 
       if (response.status === 200 || response.status === 201) {
@@ -292,9 +278,14 @@ function ThankYouPage({ }: ThankYouPageProps) {
           </div>
 
           <Formik
-            initialValues={getInitialValues(friendCount, referrerInfo?.email || '')}
+            initialValues={{
+              referrerEmail: '',
+              referrerName: '',
+              friends: Array.from({ length: friendCount }, () => ({ firstName: '', lastName: '', email: '' }))
+            }}
             validationSchema={referralValidationSchema}
             onSubmit={handleReferralSubmit}
+            enableReinitialize={true}
           >
             {({ values, isValid, dirty, setValues, setFieldValue }) => {
               // Update file input change handler to use setValues
@@ -339,6 +330,7 @@ function ThankYouPage({ }: ThankYouPageProps) {
                       // Update form values directly
                       setValues({
                         referrerEmail: values.referrerEmail,
+                        referrerName: values.referrerName,
                         friends: newFriends
                       });
 
@@ -357,7 +349,7 @@ function ThankYouPage({ }: ThankYouPageProps) {
               ).length;
 
               // Debug logging
-              console.log('Form state:', { isValid, dirty, activeFriendCount, values: values.friends });
+              console.log('Form state:', { isValid, dirty, activeFriendCount, values: values.friends, referrerEmail: values.referrerEmail, referrerName: values.referrerName });
 
               const vipStatus = getVIPStatus(activeFriendCount);
               const IconComponent = vipStatus.icon;
@@ -377,6 +369,21 @@ function ThankYouPage({ }: ThankYouPageProps) {
                       type="email"
                       required
                       iconType="email"
+                    />
+                  </div>
+
+                  {/* Referrer Name */}
+                  <div className="bg-slate-900/30 rounded-xl p-6 border border-slate-700/30">
+                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      Your Name (Required)
+                    </h3>
+                    <PremiumTextField
+                      field="referrerName"
+                      label_text="Your Name"
+                      placeholder="Enter your name"
+                      type="text"
+                      required
+                      iconType="user"
                     />
                   </div>
 

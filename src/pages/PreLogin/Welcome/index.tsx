@@ -6,7 +6,7 @@ import { parse } from 'csv-parse/browser/esm/sync';
 import Axios from '@/api';
 import { SuccessNotification, ErrorNotification } from '@/utils/toast';
 import PremiumTextField from '@/components/FormikFields/PremiumTextField';
-import { FiUsers, FiCheckCircle, FiStar, FiAward, FiPlus, FiUpload, FiDownload, FiMail, FiTrash2 } from 'react-icons/fi';
+import { FiUsers, FiCheckCircle, FiStar, FiAward, FiPlus, FiUpload, FiDownload, FiTrash2 } from 'react-icons/fi';
 
 interface ReferralFriend {
   firstName: string;
@@ -14,12 +14,15 @@ interface ReferralFriend {
   email: string;
 }
 
-interface WelcomePageProps {}
+interface WelcomePageProps { }
 
 const referralValidationSchema = Yup.object({
   referrerEmail: Yup.string()
     .email('Invalid email address')
     .required('Your email is required to process referrals'),
+  referrerName: Yup.string()
+    .min(2, 'Name must be at least 2 characters')
+    .required('Your name is required to process referrals'),
   friends: Yup.array().test('at-least-3-friends', 'Please add at least 3 friends to unlock VIP status', function (friends) {
     if (!friends) return false;
     const validFriends = friends.filter(friend =>
@@ -31,18 +34,15 @@ const referralValidationSchema = Yup.object({
   })
 });
 
-const getInitialValues = (friendCount: number = 3) => ({
-  referrerEmail: '',
-  friends: Array.from({ length: friendCount }, () => ({ firstName: '', lastName: '', email: '' }))
-});
 
-function WelcomePage({}: WelcomePageProps) {
+
+function WelcomePage({ }: WelcomePageProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [friendCount, setFriendCount] = useState(3);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleReferralSubmit = async (values: { referrerEmail: string; friends: ReferralFriend[] }, { resetForm }: any) => {
+  const handleReferralSubmit = async (values: { referrerEmail: string; referrerName: string; friends: ReferralFriend[] }, { resetForm }: any) => {
     setIsLoading(true);
     try {
       // Filter out empty friends
@@ -57,13 +57,14 @@ function WelcomePage({}: WelcomePageProps) {
 
       const response = await Axios.post('/lead/refer', {
         friends: validFriends,
-        referrerEmail: values.referrerEmail
+        referrerEmail: values.referrerEmail,
+        referrerName: values.referrerName
       });
 
       if (response.status === 200 || response.status === 201) {
         const result = response.data?.data;
         const successfulReferrals = result?.successfulReferrals || validFriends.length;
-        
+
         SuccessNotification(`🎉 ${successfulReferrals} friends successfully referred! Keep going for the Top Referrer Award!`);
         resetForm();
         setFriendCount(3);
@@ -111,7 +112,7 @@ function WelcomePage({}: WelcomePageProps) {
       ErrorNotification('You need at least 3 friend entries');
       return;
     }
-    
+
     const newFriends = currentFriends.filter((_, index) => index !== indexToDelete);
     setFieldValue('friends', newFriends);
     setFriendCount(newFriends.length);
@@ -142,11 +143,11 @@ function WelcomePage({}: WelcomePageProps) {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-6">
             <FiAward className="w-10 h-10 text-white" />
           </div>
-          
+
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
             🎉 Congratulations — You're Now a VIP
           </h1>
-          
+
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
             You've just unlocked VIP Access to DeepTrust AI by sharing 3 or more referrals.
           </p>
@@ -158,7 +159,7 @@ function WelcomePage({}: WelcomePageProps) {
             <FiStar className="w-8 h-8 text-purple-400 mr-3" />
             <h2 className="text-2xl font-bold text-white">Here's what you now have:</h2>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <div className="space-y-4">
               <div className="flex items-start">
@@ -168,7 +169,7 @@ function WelcomePage({}: WelcomePageProps) {
                   <p className="text-slate-300">Priority access to the platform before the public.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <FiCheckCircle className="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" />
                 <div>
@@ -177,7 +178,7 @@ function WelcomePage({}: WelcomePageProps) {
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex items-start">
                 <FiCheckCircle className="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" />
@@ -186,7 +187,7 @@ function WelcomePage({}: WelcomePageProps) {
                   <p className="text-slate-300">Insider videos and progress reports straight from our team.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <FiCheckCircle className="w-5 h-5 text-green-400 mr-3 mt-1 flex-shrink-0" />
                 <div>
@@ -228,7 +229,7 @@ function WelcomePage({}: WelcomePageProps) {
             <FiUsers className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-white mb-2">Add More Referrals</h2>
             <p className="text-slate-300 mb-6">Continue building your referral count for the Top Referrer Award</p>
-            
+
             {/* CSV Options */}
             <div className="flex justify-center gap-4 mb-6">
               <button
@@ -239,7 +240,7 @@ function WelcomePage({}: WelcomePageProps) {
                 <FiUpload className="w-4 h-4 mr-2" />
                 Upload CSV
               </button>
-              
+
               <button
                 type="button"
                 onClick={downloadSampleCSV}
@@ -249,7 +250,7 @@ function WelcomePage({}: WelcomePageProps) {
                 Download Sample CSV
               </button>
             </div>
-            
+
             <input
               ref={fileInputRef}
               type="file"
@@ -260,9 +261,14 @@ function WelcomePage({}: WelcomePageProps) {
           </div>
 
           <Formik
-            initialValues={getInitialValues(friendCount)}
+            initialValues={{
+              referrerEmail: '',
+              referrerName: '',
+              friends: Array.from({ length: friendCount }, () => ({ firstName: '', lastName: '', email: '' }))
+            }}
             validationSchema={referralValidationSchema}
             onSubmit={handleReferralSubmit}
+            enableReinitialize={true}
           >
             {({ values, isValid, dirty, setValues, setFieldValue }) => {
               // Update file input change handler to use setValues
@@ -291,7 +297,7 @@ function WelcomePage({}: WelcomePageProps) {
                       const firstRecord = records[0] as Record<string, any>;
                       const csvColumns = Object.keys(firstRecord);
                       const missingColumns = requiredColumns.filter(col => !csvColumns.includes(col));
-                      
+
                       if (missingColumns.length > 0) {
                         ErrorNotification(`CSV missing required columns: ${missingColumns.join(', ')}`);
                         return;
@@ -307,6 +313,7 @@ function WelcomePage({}: WelcomePageProps) {
                       // Update form values directly
                       setValues({
                         referrerEmail: values.referrerEmail,
+                        referrerName: values.referrerName,
                         friends: newFriends
                       });
 
@@ -329,7 +336,6 @@ function WelcomePage({}: WelcomePageProps) {
                   {/* Referrer Email */}
                   <div className="bg-slate-900/30 rounded-xl p-6 border border-slate-700/30">
                     <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                      <FiMail className="w-5 h-5 mr-2" />
                       Your Email (Required)
                     </h3>
                     <PremiumTextField
@@ -341,6 +347,24 @@ function WelcomePage({}: WelcomePageProps) {
                       iconType="email"
                     />
                   </div>
+
+
+                  {/* Referrer Name */}
+                  <div className="bg-slate-900/30 rounded-xl p-6 border border-slate-700/30">
+                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                      Your Name (Required)
+                    </h3>
+                    <PremiumTextField
+                      field="referrerName"
+                      label_text="Your Name"
+                      placeholder="Enter your name"
+                      type="text"
+                      required
+                      iconType="user"
+                    />
+                  </div>
+
+
 
                   {/* Friend Fields */}
                   {values.friends.map((_, index) => (
@@ -363,7 +387,7 @@ function WelcomePage({}: WelcomePageProps) {
                           </button>
                         )}
                       </h3>
-                      
+
                       <div className="grid md:grid-cols-2 gap-4">
                         <PremiumTextField
                           field={`friends.${index}.firstName`}
@@ -373,7 +397,7 @@ function WelcomePage({}: WelcomePageProps) {
                           required
                           iconType="user"
                         />
-                        
+
                         <PremiumTextField
                           field={`friends.${index}.lastName`}
                           label_text="Last Name"
@@ -383,7 +407,7 @@ function WelcomePage({}: WelcomePageProps) {
                           iconType="user"
                         />
                       </div>
-                      
+
                       <PremiumTextField
                         field={`friends.${index}.email`}
                         label_text="Email Address"
